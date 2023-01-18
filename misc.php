@@ -1,11 +1,11 @@
 <?php
-define("MSG_EXTENSION_LOADED_SUCCESS",  "✅Extension_loaded(): MongoDB Extension loaded");
-define("MSG_EXTENSION_LOADED_FAIL",     "❌Extension_loaded(): MongoDB Extension not loaded");
-define("MSG_EXTENSION_LOADED2_SUCCESS", "✅Class 'MongoDB\Driver\Manager' available. MongoDB PHP Extension is loaded");
-define("MSG_EXTENSION_LOADED2_FAIL",    "❌Class 'MongoDB\Driver\Manager' not found. MongoDB PHP Extension not loaded");
+define("MSG_EXTENSION_LOADED_SUCCESS",  "✅MongoDB Extension loaded | Method #1");
+define("MSG_EXTENSION_LOADED_FAIL",     "❌MongoDB Extension not loaded | Method #1");
+define("MSG_EXTENSION_LOADED2_SUCCESS", "✅MongoDB PHP Extension loaded  | Method #2");
+define("MSG_EXTENSION_LOADED2_FAIL",    "❌MongoDB PHP Extension not loaded | Method #2");
 
-define("MSG_LIBRARY_PRESENT",           "✅Class 'MongoDB\Client' available. MongoDB PHP Library is available");
-define("MSG_LIBRARY_MISSING",           "❌Class 'MongoDB\Client' not found. MongoDB PHP Library not included");
+define("MSG_LIBRARY_PRESENT",           "✅MongoDB PHP Library is available");
+define("MSG_LIBRARY_MISSING",           "❌MongoDB PHP Library not included");
 
 define("MSG_CLIENT_SUCCESS",            "✅MongoDB\Client created");
 define("MSG_CLIENT_FAIL",               "❌Could not create MongoDB\Client");
@@ -29,5 +29,4 @@ define("MSG_DELETEONE_SUCCESS",         "✅deleteOne() success");
 function c_echo( $text ) {
     echo('Checker | '.$text."<br>");
 }
-
 ?>
