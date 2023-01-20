@@ -13,24 +13,36 @@
     // MongoDB Extension check, Method #1
     // you can disable extension and restart your webserver to make this fail
     //
-    echo extension_loaded("mongodb") ? c_echo(MSG_EXTENSION_LOADED_SUCCESS) : c_echo(MSG_EXTENSION_LOADED_FAIL);
+    if ( extension_loaded('mongodb') ) {
+        echo(MSG_EXTENSION_LOADED_SUCCESS);
+    } else {
+            c_echo(MSG_EXTENSION_LOADED_FAIL);
+    }
 
     // MongoDB Extension check, Method #2
     if ( class_exists('MongoDB\Driver\Manager') == false ) {
-        c_echo(MSG_EXTENSION_LOADED2_FAIL); 
+        echo(MSG_EXTENSION_LOADED2_FAIL); 
         exit();
     } 
     else {
-        c_echo(MSG_EXTENSION_LOADED2_SUCCESS);
+        echo(MSG_EXTENSION_LOADED2_SUCCESS);
+    }
+
+    // MongoDB Extension check, Method #3
+    $libversion = phpversion('mongodb');
+    if ( $libversion !== false ) {
+        echo("version $libversion".MSG_EXTENSION_LOADED3_SUCCESS);
+    } else {
+        c_echo(MSG_EXTENSION_LOADED3_FAIL);
     }
 
     // MongoDB PHP Library check
     if ( class_exists('MongoDB\Client') == false ) {
-        c_echo(MSG_LIBRARY_MISSING); 
+        echo(MSG_LIBRARY_MISSING); 
         exit();
     } 
     else {
-        c_echo(MSG_LIBRARY_PRESENT);
+        echo(MSG_LIBRARY_PRESENT);
     }
 
     /*****************************************************
@@ -51,14 +63,14 @@
     // Fail if the connection URL is wrong
     try {
         $client = new MongoDB\Client('mongodb+srv://'.$_ENV['MDB_USER'].':'.$_ENV['MDB_PASS'].'@serverlessinstance0.owdak.mongodb.net/?retryWrites=true&w=majority');
-        c_echo(MSG_CLIENT_SUCCESS);
+        echo(MSG_CLIENT_SUCCESS);
         // succeeds even if user/password is invalid
     }
     catch (\Exception $e) {
         // fails if the URL is malformed
         // fails without a succesful network access to cluster
         //      fails if the IP is blocked by an ACL or firewall
-        c_echo(MSG_CLIENT_FAIL);
+        echo(MSG_CLIENT_FAIL);
         exit();
     }
 
@@ -68,22 +80,22 @@
         $databases_list_iterator = $client->listDatabaseNames(); // asks for a list of database names on the cluster
 
         $databases_list          = iterator_to_array( $databases_list_iterator );
-        c_echo( MSG_CLIENT_AUTH_SUCCESS );
+        echo( MSG_CLIENT_AUTH_SUCCESS );
     }
     catch (\Exception $e) {
         // Fail if incorrect user/password, or not authorized
         // Could be another issue, check content of $e->getMessage()
-        c_echo( MSG_EXCEPTION. $e->getMessage() );
+        echo( MSG_EXCEPTION. $e->getMessage() );
         exit();
     }
 
     // check if our desired database is present in the cluster by looking up its name
     $workingdbname = 'sample_analytics';
     if ( in_array( $workingdbname, $databases_list ) ) {
-        c_echo( MSG_DATABASE_FOUND." '$workingdbname'"  );
+        echo( MSG_DATABASE_FOUND." '$workingdbname'<br>"  );
     }
     else {
-        c_echo( MSG_DATABASE_NOT_FOUND." '$workingdbname'"  );
+        echo( MSG_DATABASE_NOT_FOUND." '$workingdbname'<br>"  );
         exit();
     }
 
@@ -96,13 +108,13 @@
     foreach( $collections_list as $collection ) {
         if ( $collection->getName() == $workingCollectionname ) {
             $foundCollection = true;
-            c_echo( MSG_COLLECTION_FOUND." '$workingCollectionname'"  );
+            echo( MSG_COLLECTION_FOUND." '$workingCollectionname'<br>"  );
             break; 
         }
     }
 
     if ( $foundCollection == false ) {
-        c_echo( MSG_COLLECTION_NOT_FOUND." '$workingCollectionname'"  );
+        echo( MSG_COLLECTION_NOT_FOUND." '$workingCollectionname'<br>"  );
         exit();
     }
 
@@ -131,12 +143,12 @@
         $result    = $customers->insertOne( ['_id'=> $fixedid, 'username' => 'newuser_withfixedid'] );
         $insertedcount = $result->getInsertedCount(); // $insertedcount == 1 
         if ($insertedcount == 1) {
-            c_echo( MSG_INSERTONE_SUCCESS );
+            echo( MSG_INSERTONE_SUCCESS );
         }
     }
     catch (\Exception $e) {       
         // example: fails if trying adding document with a duplicate ID
-        c_echo( MSG_INSERTONE_FAIL. $e->getMessage() );
+        echo( MSG_INSERTONE_FAIL. $e->getMessage() );
     }
 
    /*****************************************************
@@ -147,7 +159,7 @@
     // the returned $document should contain a non-null, valid document
     $document = $customers->findOne(['username' => 'wesley20']); 
     if ($document->username == "wesley20") {
-        c_echo( MSG_FINDONE_SUCCESS );
+        echo( MSG_FINDONE_SUCCESS );
     }
 
     // querying a document which does not exist. $document will be null
@@ -166,7 +178,7 @@
     try {
         $document   = $customers->deleteOne( ['_id'=> $fixedid] );
         $numdeleted = $document->getDeletedCount(); // $numdeleted should be 1 
-        c_echo ( MSG_DELETEONE_SUCCESS );
+        echo ( MSG_DELETEONE_SUCCESS );
     }
     catch (\Exception $e) {
         echo($e->getMessage() );
