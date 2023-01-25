@@ -29,4 +29,6 @@ define("MSG_INSERTONE_FAIL",            "❌insertOne() exception<br>");
 define("MSG_FINDONE_SUCCESS",           "✅findOne() success<br>");
 
 define("MSG_DELETEONE_SUCCESS",         "✅deleteOne() success<br>");
+
+define("MSG_ENV_FAIL",            "❌Missing .env file with DB credentials. Read <a href='https://www.mongodb.com/developer/languages/php/php-setup/'>this tutorial</a>, section Securing Usernames and Passwords <br>");
 ?>

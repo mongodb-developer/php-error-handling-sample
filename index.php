@@ -16,11 +16,11 @@
     if ( extension_loaded('mongodb') ) {
         echo(MSG_EXTENSION_LOADED_SUCCESS);
     } else {
-            c_echo(MSG_EXTENSION_LOADED_FAIL);
+            echo(MSG_EXTENSION_LOADED_FAIL);
     }
 
     // MongoDB Extension check, Method #2
-    if ( class_exists('MongoDB\Driver\Manager') == false ) {
+    if ( !class_exists('MongoDB\Driver\Manager') ) {
         echo(MSG_EXTENSION_LOADED2_FAIL); 
         exit();
     } 
@@ -30,14 +30,14 @@
 
     // MongoDB Extension check, Method #3
     $libversion = phpversion('mongodb');
-    if ( $libversion !== false ) {
+    if ( $libversion ) {
         echo("version $libversion".MSG_EXTENSION_LOADED3_SUCCESS);
     } else {
-        c_echo(MSG_EXTENSION_LOADED3_FAIL);
+        echo(MSG_EXTENSION_LOADED3_FAIL);
     }
 
     // MongoDB PHP Library check
-    if ( class_exists('MongoDB\Client') == false ) {
+    if ( !class_exists('MongoDB\Client')  ) {
         echo(MSG_LIBRARY_MISSING); 
         exit();
     } 
@@ -53,6 +53,12 @@
      * 
     ******************************************************/
 
+    // checks if you have an .env file with your credentials. 
+    if ( !file_exists('.env') ) {
+        echo(MSG_ENV_FAIL);
+        exit();
+    }
+
     // using phpdotenv to store our credentials in an .env file 
     // https://github.com/vlucas/phpdotenv
     //
@@ -62,7 +68,10 @@
     // Fail if the MongoDB Extension is not configuired and loaded
     // Fail if the connection URL is wrong
     try {
-        $client = new MongoDB\Client('mongodb+srv://'.$_ENV['MDB_USER'].':'.$_ENV['MDB_PASS'].'@serverlessinstance0.owdak.mongodb.net/?retryWrites=true&w=majority');
+        // IMPORTANT: replace with YOUR server DNS name
+        $mdbserver = 'serverlessinstance0.owdak.mongodb.net';
+
+        $client = new MongoDB\Client('mongodb+srv://'.$_ENV['MDB_USER'].':'.$_ENV['MDB_PASS'].'@'.$mdbserver.'/?retryWrites=true&w=majority');
         echo(MSG_CLIENT_SUCCESS);
         // succeeds even if user/password is invalid
     }
@@ -113,7 +122,7 @@
         }
     }
 
-    if ( $foundCollection == false ) {
+    if ( !$foundCollection ) {
         echo( MSG_COLLECTION_NOT_FOUND." '$workingCollectionname'<br>"  );
         exit();
     }
