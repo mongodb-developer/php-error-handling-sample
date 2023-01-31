@@ -111,15 +111,16 @@
     // check if your desired collection is present in the database
     $workingCollectionname      = 'customers';
     $collections_list_itrerator = $client->$workingdbname->listCollections();
-    $collections_list           = iterator_to_array( $collections_list_itrerator );
     $foundCollection            = false;
-
-    foreach( $collections_list as $collection ) {
-        if ( $collection->getName() == $workingCollectionname ) {
+    
+    $collections_list_itrerator->rewind();
+    while( $collections_list_itrerator->valid() ) {
+        if ( $collections_list_itrerator->current()->getName() == $workingCollectionname ) {
             $foundCollection = true;
             echo( MSG_COLLECTION_FOUND." '$workingCollectionname'<br>"  );
             break; 
         }
+        $collections_list_itrerator->next();
     }
 
     if ( !$foundCollection ) {
@@ -178,7 +179,7 @@
     /*****************************************************
      * ❌ Update
     ******************************************************/
-    // ❌ find an update exemple that triggers an exception
+    // ❌ add an update exemple that triggers an exception
 
 
     /*****************************************************
